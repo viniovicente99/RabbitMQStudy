@@ -78,6 +78,7 @@ Body:
   "key1": "value1",
   "key2": "value2"
 }
+
 Observações
 O RabbitMQ roda em container, enquanto os serviços rodam localmente
 O nome da fila é configurável via variáveis de ambiente
