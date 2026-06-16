@@ -1,0 +1,84 @@
+# Comunicação Assíncrona com RabbitMQ e Spring Boot
+
+Este projeto demonstra a comunicação assíncrona entre serviços utilizando RabbitMQ e Spring Boot.
+
+O objetivo é explorar, na prática, como funciona uma arquitetura orientada a mensagens, indo além do modelo tradicional de APIs síncronas.
+
+## Visão Geral
+
+O sistema é composto por dois serviços:
+
+- **Publisher**: responsável por enviar mensagens para uma fila no RabbitMQ  
+- **Subscriber**: responsável por consumir e processar as mensagens  
+
+O RabbitMQ atua como broker de mensageria e é executado em um container Docker.
+
+## Arquitetura
+
+Publisher → RabbitMQ Queue → Subscriber  
+                      ↓  
+                   BOQ (fila de erro)
+
+## Funcionalidades
+
+- Comunicação assíncrona entre serviços  
+- Publicação e consumo de mensagens com Spring AMQP  
+- Conversão de mensagens em JSON  
+- Retry com estratégia de backoff  
+- Tratamento de falhas com fila de erro (BOQ)  
+
+## Tecnologias
+
+- Java 17  
+- Spring Boot  
+- Spring AMQP  
+- RabbitMQ  
+- Maven  
+- Docker (apenas para o RabbitMQ)  
+
+## Como executar
+
+### 1. Subir o RabbitMQ
+
+```bash
+docker compose up -d
+
+Interface de gerenciamento:
+http://localhost:8080
+
+2. Gerar os .jar
+cd publisher
+mvn clean package -DskipTests
+
+cd ../subscriber
+mvn clean package -DskipTests
+3. Rodar os serviços
+
+Em terminais separados:
+
+cd publisher
+mvn spring-boot:run
+cd subscriber
+mvn spring-boot:run
+Endpoints
+Enviar mensagem de texto
+
+POST /publish/text
+
+Body:
+
+Hello World
+Enviar mensagem JSON
+
+POST /publish/json
+
+Body:
+
+{
+  "key1": "value1",
+  "key2": "value2"
+}
+Observações
+O RabbitMQ roda em container, enquanto os serviços rodam localmente
+O nome da fila é configurável via variáveis de ambiente
+Mensagens que falham após retries são enviadas para a BOQ
